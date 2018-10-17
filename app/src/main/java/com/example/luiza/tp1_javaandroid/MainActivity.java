@@ -10,7 +10,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -49,11 +52,16 @@ public class MainActivity extends AppCompatActivity {
         salvar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (validadorFormulario(nome.getText().toString(), telefone.getText().toString(), email.getText().toString(), cidade.getText().toString())
+                String name = nome.getText().toString();
+                String phone = telefone.getText().toString();
+                String emailAddress = email.getText().toString();
+                String city = cidade.getText().toString();
+
+                if (validadorFormulario(name, phone, emailAddress, city)
                         && isExternalStorageWritable()
                         && isExternalStorageReadable()){
                     if(erro_vazio.getVisibility() == View.VISIBLE) erro_vazio.setVisibility(View.GONE);
-
+                    createExternalStoragePrivateFile(name, phone, emailAddress, city);
 
                 } else {
                     erro_vazio.setVisibility(View.VISIBLE);
@@ -91,8 +99,15 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void createExternalStoragePrivateFile() {
+    private void createExternalStoragePrivateFile(String nome, String telefone, String email, String cidade) {
         File file = new File(getExternalFilesDir(null), "contatos.txt");
+        try {
+            BufferedWriter buffWrite = new BufferedWriter(new FileWriter(file));
+            buffWrite.append(String.format("%s,%s,%s,%s", nome, telefone, email, cidade));
+            buffWrite.close();
+        } catch (IOException e) {
+            System.out.println("Erro");
+        }
     }
 
 }

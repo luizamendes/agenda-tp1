@@ -24,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/titulo_adicionar"
-        android:layout_marginTop="61dp" />
+        android:layout_marginTop="61dp"
+        android:layout_below="@+id/titulo_adicionar"/>
 
     <EditText
         android:id="@+id/campo_telefone"
@@ -43,6 +44,56 @@
         android:layout_alignParentTop="true"
         android:layout_alignStart="@+id/titulo_adicionar"
         android:layout_marginTop="186dp"
-        android:hint="Email" />
+        android:hint="Email"
+        android:layout_below="@id/campo_telefone"/>
+
+
+    <EditText
+        android:id="@+id/campo_cidade"
+        android:layout_width="300dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignStart="@+id/titulo_adicionar"
+        android:layout_marginBottom="207dp"
+        android:hint="Cidade" />
+
+    <TextView
+        android:id="@+id/erro_vazio"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="174dp"
+        android:text="Preencha todos os campos"
+        android:textColor="@color/error" />
+
+    <Button
+        android:id="@+id/btn_limpar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="106dp"
+        android:layout_marginStart="68dp"
+        android:text="Limpar" />
+
+    <Button
+        android:id="@+id/btn_salvar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentEnd="true"
+        android:layout_alignTop="@+id/btn_limpar"
+        android:layout_marginEnd="98dp"
+        android:text="Salvar" />
+
+    <Button
+        android:id="@+id/btn_contatos"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="43dp"
+        android:text="Visualizar contatos" />
+
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package com.example.luiza.tp1_javaandroid;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,8 +11,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -57,15 +60,20 @@ public class MainActivity extends AppCompatActivity {
                 String emailAddress = email.getText().toString();
                 String city = cidade.getText().toString();
 
-                if (validadorFormulario(name, phone, emailAddress, city)
-                        && isExternalStorageWritable()
-                        && isExternalStorageReadable()){
+                if (isExternalStorageWritable() && isExternalStorageReadable()){
                     if(erro_vazio.getVisibility() == View.VISIBLE) erro_vazio.setVisibility(View.GONE);
                     createExternalStoragePrivateFile(name, phone, emailAddress, city);
 
                 } else {
                     erro_vazio.setVisibility(View.VISIBLE);
                 }
+            }
+        });
+
+        contatos.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                carregarContatos();
             }
         });
     }
@@ -110,4 +118,8 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+   private void carregarContatos() {
+       Intent intent = new Intent(this, ContactsActivity.class);
+       startActivity(intent);
+   }
 }

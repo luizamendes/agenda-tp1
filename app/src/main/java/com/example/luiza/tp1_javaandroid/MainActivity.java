@@ -1,21 +1,21 @@
 package com.example.luiza.tp1_javaandroid;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Environment;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
@@ -60,13 +60,7 @@ public class MainActivity extends AppCompatActivity {
                 String emailAddress = email.getText().toString();
                 String city = cidade.getText().toString();
 
-                if (isExternalStorageWritable() && isExternalStorageReadable()){
-                    if(erro_vazio.getVisibility() == View.VISIBLE) erro_vazio.setVisibility(View.GONE);
-                    createExternalStoragePrivateFile(name, phone, emailAddress, city);
-
-                } else {
-                    erro_vazio.setVisibility(View.VISIBLE);
-                }
+                gravarContato(name, phone, emailAddress, city);
             }
         });
 
@@ -107,19 +101,66 @@ public class MainActivity extends AppCompatActivity {
         return false;
     }
 
-    private void createExternalStoragePrivateFile(String nome, String telefone, String email, String cidade) {
-        File file = new File(getExternalFilesDir(null), "contatos.txt");
-        try {
-            BufferedWriter buffWrite = new BufferedWriter(new FileWriter(file));
-            buffWrite.append(String.format("%s,%s,%s,%s", nome, telefone, email, cidade));
-            buffWrite.close();
-        } catch (IOException e) {
-            System.out.println("Erro");
+    private void gravarContato(String nome, String telefone, String email, String cidade) {
+        String contato = String.format("%s,%s,%s,%s", nome, telefone, email, cidade);
+        String nomeArquivo = "contatos.txt";
+        File arq;
+        byte[] dados;
+        try
+        {
+            arq = new File(Environment.getExternalStorageDirectory(), nomeArquivo);
+            FileOutputStream fos;
+
+            dados = contato.getBytes();
+
+            fos = new FileOutputStream(arq);
+            fos.write(dados);
+            fos.flush();
+            fos.close();
+            mensagem("Texto Salvo com sucesso!");
         }
+        catch (Exception e)
+        {
+            mensagem("Erro : " + e.getMessage());
+        }
+
+        //        String contato = String.format("%s,%s,%s,%s", nome, telefone, email, cidade);
+//
+//        if (isExternalStorageWritable() && checarPermissao(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+//
+//            File file = new File(Environment.getExternalStorageDirectory(), "contatos.txt");
+//            try {
+//                FileOutputStream fos = new FileOutputStream(file);
+//                fos.write(contato.getBytes());
+//                fos.close();
+//
+//                Toast.makeText(this, "Arquivo salvo", Toast.LENGTH_SHORT).show();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//        } else {
+//            Toast.makeText(this, "Não foi possível salvar arquivos", Toast.LENGTH_SHORT).show();
+//
+//        }
     }
 
-   private void carregarContatos() {
-       Intent intent = new Intent(this, ContactsActivity.class);
-       startActivity(intent);
-   }
+    private boolean checarPermissao(String permissao){
+        int check = ContextCompat.checkSelfPermission(this, permissao);
+        return (check == PackageManager.PERMISSION_GRANTED);
+    }
+
+    private void carregarContatos() {
+        Intent intent = new Intent(this, ContactsActivity.class);
+        startActivity(intent);
+    }
+
+    private void mensagem(String msg) {
+        Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
+    }
+
+    private String ObterDiretorio() {
+        File root = android.os.Environment.getExternalStorageDirectory();
+        return root.toString();
+    }
+
 }

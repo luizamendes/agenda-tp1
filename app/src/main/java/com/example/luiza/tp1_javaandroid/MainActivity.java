@@ -46,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         erro_vazio = findViewById(R.id.erro_vazio);
         erro_vazio.setVisibility(View.GONE);
 
+        pegarPermissao();
+
         limpar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -105,7 +107,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void gravarContato(String nome, String telefone, String email, String cidade) {
         if (isExternalStorageWritable()){
-            String contato = String.format("%s,%s,%s,%s", nome, telefone, email, cidade);
+            String contato = String.format("%s,%s,%s,%s %n", nome, telefone, email, cidade);
             String nomeArquivo = "contatos.txt";
             File arq;
             byte[] dados;
@@ -115,7 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
                 dados = contato.getBytes();
 
-                fos = new FileOutputStream(arq);
+                fos = new FileOutputStream(arq, true);
                 fos.write(dados);
                 fos.flush();
                 fos.close();
@@ -124,8 +126,6 @@ public class MainActivity extends AppCompatActivity {
             catch (Exception e) {
                 mensagem("Erro : " + e.getMessage());
             }
-        } else {
-            pegarPermissao();
         }
     }
 
@@ -144,7 +144,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void pegarPermissao() {
-        if (!checarPermissao("WRITE_EXTERNAL_STORAGE")) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
@@ -152,8 +152,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL: {
                 // If request is cancelled, the result arrays are empty.
@@ -170,9 +169,6 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return;
             }
-
-            // other 'case' lines to check for other
-            // permissions this app might request
         }
     }
 

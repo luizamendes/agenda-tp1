@@ -20,6 +20,7 @@ import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL = 0;
     private Button limpar;
     private Button salvar;
     private Button contatos;
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
                 carregarContatos();
             }
         });
+
     }
 
     private void limparCampos(){
@@ -102,46 +104,29 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void gravarContato(String nome, String telefone, String email, String cidade) {
-        String contato = String.format("%s,%s,%s,%s", nome, telefone, email, cidade);
-        String nomeArquivo = "contatos.txt";
-        File arq;
-        byte[] dados;
-        try
-        {
-            arq = new File(Environment.getExternalStorageDirectory(), nomeArquivo);
-            FileOutputStream fos;
+        if (isExternalStorageWritable()){
+            String contato = String.format("%s,%s,%s,%s", nome, telefone, email, cidade);
+            String nomeArquivo = "contatos.txt";
+            File arq;
+            byte[] dados;
+            try {
+                arq = new File(Environment.getExternalStorageDirectory(), nomeArquivo);
+                FileOutputStream fos;
 
-            dados = contato.getBytes();
+                dados = contato.getBytes();
 
-            fos = new FileOutputStream(arq);
-            fos.write(dados);
-            fos.flush();
-            fos.close();
-            mensagem("Texto Salvo com sucesso!");
+                fos = new FileOutputStream(arq);
+                fos.write(dados);
+                fos.flush();
+                fos.close();
+                mensagem("Texto Salvo com sucesso!");
+            }
+            catch (Exception e) {
+                mensagem("Erro : " + e.getMessage());
+            }
+        } else {
+            pegarPermissao();
         }
-        catch (Exception e)
-        {
-            mensagem("Erro : " + e.getMessage());
-        }
-
-        //        String contato = String.format("%s,%s,%s,%s", nome, telefone, email, cidade);
-//
-//        if (isExternalStorageWritable() && checarPermissao(Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
-//
-//            File file = new File(Environment.getExternalStorageDirectory(), "contatos.txt");
-//            try {
-//                FileOutputStream fos = new FileOutputStream(file);
-//                fos.write(contato.getBytes());
-//                fos.close();
-//
-//                Toast.makeText(this, "Arquivo salvo", Toast.LENGTH_SHORT).show();
-//            } catch (IOException e) {
-//                e.printStackTrace();
-//            }
-//        } else {
-//            Toast.makeText(this, "Não foi possível salvar arquivos", Toast.LENGTH_SHORT).show();
-//
-//        }
     }
 
     private boolean checarPermissao(String permissao){
@@ -158,9 +143,39 @@ public class MainActivity extends AppCompatActivity {
         Toast.makeText(getApplicationContext(), msg, Toast.LENGTH_SHORT).show();
     }
 
-    private String ObterDiretorio() {
-        File root = android.os.Environment.getExternalStorageDirectory();
-        return root.toString();
+    private void pegarPermissao() {
+        if (!checarPermissao("WRITE_EXTERNAL_STORAGE")) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
+        }
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
+    }
+
+
 
 }

@@ -121,6 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 fos.write(dados);
                 fos.flush();
                 fos.close();
+                limparCampos();
                 mensagem("Texto Salvo com sucesso!");
             }
             catch (Exception e) {

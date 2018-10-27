@@ -6,27 +6,17 @@
     android:layout_height="match_parent"
     tools:context=".ContactsActivity">
 
-    <TextView
-        android:id="@+id/teste"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="51dp"
-        tools:layout_editor_absoluteY="41dp" />
+    <ListView
+        android:id="@+id/lista_contatos"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginStart="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/teste2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="51dp"
-        tools:layout_editor_absoluteY="79dp" />
 
-    <TextView
-        android:id="@+id/teste3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TextView"
-        tools:layout_editor_absoluteX="51dp"
-        tools:layout_editor_absoluteY="122dp" />
 </android.support.constraint.ConstraintLayout>

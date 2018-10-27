@@ -4,6 +4,8 @@ import android.os.Environment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -15,21 +17,19 @@ import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 
 public class ContactsActivity extends AppCompatActivity {
 
-    TextView nome;
-    TextView telefone;
-    TextView cidade;
-    TextView email;
+    ArrayList<String> contatos;
+    ListView listview;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_contacts);
 
-        nome = findViewById(R.id.teste);
-        telefone = findViewById(R.id.teste2);
+        contatos = new ArrayList<>();
 
         carregar();
     }
@@ -39,18 +39,20 @@ public class ContactsActivity extends AppCompatActivity {
         String nomeArquivo = "contatos.txt";
         File arq;
         String lstrlinha;
-        try {
-            nome.setText("");
+        String[] infoContatos = new String[4];
 
+        try {
             arq = new File(Environment.getExternalStorageDirectory(), nomeArquivo);
             BufferedReader br = new BufferedReader(new FileReader(arq));
 
             while ((lstrlinha = br.readLine()) != null) {
-                if (!nome.getText().toString().equals("")) {
-                    nome.append("\n");
-                }
-                nome.append(lstrlinha);
+                infoContatos = lstrlinha.split(",");
+                contatos.add(infoContatos[0]);
             }
+
+            ArrayAdapter<String> itemsAdapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, contatos);
+            listview = findViewById(R.id.lista_contatos);
+            listview.setAdapter(itemsAdapter);
 
             mensagem("Texto Carregado com sucesso!");
 
@@ -58,7 +60,6 @@ public class ContactsActivity extends AppCompatActivity {
             mensagem("Erro : " + e.getMessage());
         }
     }
-
 
     /* Checks if external storage is available to at least read */
     private boolean isExternalStorageReadable() {

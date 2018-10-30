@@ -1,6 +1,8 @@
 package com.example.luiza.tp1_javaandroid;
 
-public class ContatoModel {
+import java.io.Serializable;
+
+public class ContatoModel implements Serializable {
 
     private String nome;
     private String telefone;

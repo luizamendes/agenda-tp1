@@ -13,10 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,7 +61,14 @@ public class MainActivity extends AppCompatActivity {
                 String emailAddress = email.getText().toString();
                 String city = cidade.getText().toString();
 
-                gravarContato(name, phone, emailAddress, city);
+                if (validadorFormulario(name, phone, emailAddress, city)) {
+                    if (erro_vazio.getVisibility() == View.VISIBLE) {
+                        erro_vazio.setVisibility(View.GONE);
+                    }
+                    gravarContato(name, phone, emailAddress, city);
+                } else {
+                    erro_vazio.setVisibility(View.VISIBLE);
+                }
             }
         });
 
@@ -81,25 +86,16 @@ public class MainActivity extends AppCompatActivity {
         telefone.setText("");
         email.setText("");
         cidade.setText("");
+        erro_vazio.setVisibility(View.GONE);
     }
 
     private boolean validadorFormulario(String nome, String telefone, String email, String cidade){
-        return nome.equals("") && telefone.equals("") && email.equals("") && cidade.equals("");
+        return !(nome.equals("") || telefone.equals("") || email.equals("") || cidade.equals(""));
     }
 
     private boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {
-            return true;
-        }
-        return false;
-    }
-
-    /* Checks if external storage is available to at least read */
-    private boolean isExternalStorageReadable() {
-        String state = Environment.getExternalStorageState();
-        if (Environment.MEDIA_MOUNTED.equals(state) ||
-                Environment.MEDIA_MOUNTED_READ_ONLY.equals(state)) {
             return true;
         }
         return false;
@@ -122,17 +118,11 @@ public class MainActivity extends AppCompatActivity {
                 fos.flush();
                 fos.close();
                 limparCampos();
-                mensagem("Texto Salvo com sucesso!");
             }
             catch (Exception e) {
                 mensagem("Erro : " + e.getMessage());
             }
         }
-    }
-
-    private boolean checarPermissao(String permissao){
-        int check = ContextCompat.checkSelfPermission(this, permissao);
-        return (check == PackageManager.PERMISSION_GRANTED);
     }
 
     private void carregarContatos() {
@@ -151,28 +141,4 @@ public class MainActivity extends AppCompatActivity {
                     MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL);
         }
     }
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case MY_PERMISSIONS_REQUEST_WRITE_EXTERNAL: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-                }
-                return;
-            }
-        }
-    }
-
-
-
 }
